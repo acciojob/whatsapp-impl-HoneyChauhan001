@@ -12,7 +12,7 @@ public class WhatsappService {
     public String createUser(String name, String mobile) throws Exception {
         Optional<User> userOpt = whatsappRepository.getUserByMobile(mobile);
         if(userOpt.isPresent()){
-            throw new Exception("User Already Exists");
+            throw new Exception("User already exists");
         }
         else {
             User user = new User(name,mobile);
