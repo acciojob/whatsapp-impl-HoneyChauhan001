@@ -1,5 +1,6 @@
 package com.driver;
 
+import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class WhatsappService {
             group = new Group(groupName,numberOfParticipants);
         }
         whatsappRepository.createGroup(group,users);
+        whatsappRepository.addGroup(group);
         return group;
 
     }
@@ -48,17 +50,18 @@ public class WhatsappService {
     }
 
     public int sendMessage(Message message, User sender, Group group) throws Exception {
-        Optional<Group> groupOpt = whatsappRepository.getGroup(group);
+        String groupName = group.getName();
+        Optional<Group> groupOpt = whatsappRepository.getGroupByName(groupName);
         if(groupOpt.isEmpty()){
             throw new Exception("Group does not exist");
         }
         else {
-            Optional<User> userOpt = whatsappRepository.getUserInGroup(group,sender);
+            Optional<User> userOpt = whatsappRepository.getUserInGroup(groupOpt.get(),sender);
             if(userOpt.isEmpty()){
                 throw new Exception("You are not allowed to send message");
             }
             else {
-                return whatsappRepository.sendMessage(message,sender,group);
+                return whatsappRepository.sendMessage(message,userOpt.get(),groupOpt.get());
             }
         }
     }

@@ -15,6 +15,7 @@ public class WhatsappRepository {
     private HashMap<Group, User> adminMap;
     private HashMap<String,User> mobileUserMap;
     private HashMap<Integer,Message> messageMap;
+    private HashMap<String,Group> groupMap;
     private int customGroupCount;
     private int messageId;
 
@@ -41,6 +42,7 @@ public class WhatsappRepository {
         this.adminMap = new HashMap<Group, User>();
         this.mobileUserMap = new HashMap<>();
         this.messageMap = new HashMap<>();
+        this.groupMap = new HashMap<>();
         this.customGroupCount = 0;
         this.messageId = 0;
     }
@@ -75,8 +77,8 @@ public class WhatsappRepository {
 
     public Optional<User> getUserInGroup(Group group, User sender) {
         for(User user : groupUserMap.get(group)){
-            if(user.equals(sender)){
-                return Optional.of(sender);
+            if((user.getMobile()).equals(sender.getMobile())){
+                return Optional.of(user);
             }
         }
         return Optional.empty();
@@ -108,5 +110,16 @@ public class WhatsappRepository {
 
     public void changeAdmin(Group group, User user) {
         adminMap.put(group,user);
+    }
+
+    public void addGroup(Group group) {
+        groupMap.put(group.getName(),group);
+    }
+
+    public Optional<Group> getGroupByName(String groupName) {
+        if(groupMap.containsKey(groupName)){
+            return Optional.of(groupMap.get(groupName));
+        }
+        else return Optional.empty();
     }
 }
